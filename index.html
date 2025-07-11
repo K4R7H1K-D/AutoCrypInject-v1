@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APK Asset Encryption & Injection Workflow</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .workflow-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .title {
+            text-align: center;
+            color: #2d3748;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #4299e1;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: linear-gradient(45deg, #4299e1, #667eea);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+        }
+
+        .step-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        .step-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .sub-steps {
+            margin-left: 20px;
+            border-left: 2px solid #e2e8f0;
+            padding-left: 20px;
+        }
+
+        .sub-step {
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            font-size: 0.95em;
+            color: #2d3748;
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 2em;
+            color: #4299e1;
+            margin: 10px 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .input-output {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+            color: white;
+            border-left: 5px solid #2f855a;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .input-output .step-number {
+            background: linear-gradient(45deg, #2f855a, #48bb78);
+        }
+
+        .process-step {
+            background: #ffffff;
+            border-left: 5px solid #ed8936;
+        }
+
+        .process-step .step-number {
+            background: linear-gradient(45deg, #ed8936, #f6ad55);
+        }
+
+        .critical-step {
+            background: #ffffff;
+            border-left: 5px solid #e53e3e;
+        }
+
+        .critical-step .step-number {
+            background: linear-gradient(45deg, #e53e3e, #fc8181);
+        }
+
+        .code-snippet {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+
+        .highlight {
+            background: #fef5e7;
+            border: 1px solid #f6ad55;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c05621;
+        }
+    </style>
+</head>
+<body>
+    <div class="workflow-container">
+        <h1 class="title">🔐 APK Asset Encryption & Injection Workflow</h1>
+        
+        <div class="step input-output">
+            <div class="step-number">📱</div>
+            <div class="step-title">Input APK</div>
+            <div class="step-description">Original Android application package ready for asset encryption</div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="step process-step">
+            <div class="step-number">1</div>
+            <div class="step-title">Decode APK (apktool)</div>
+            <div class="step-description">Decompile the APK to access its internal structure, assets, and Smali code</div>
+            <div class="code-snippet">apktool d input.apk -o decoded_apk/</div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="step process-step">
+            <div class="step-number">2</div>
+            <div class="step-title">Collect Asset Inventory</div>
+            <div class="step-description">Scan and catalog all assets that need encryption (images, sounds, data files, etc.)</div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="step critical-step">
+            <div class="step-number">3</div>
+            <div class="step-title">Encrypt Assets (AES-256-CBC)</div>
+            <div class="step-description">Apply strong encryption to all identified assets and overwrite original files</div>
+            <div class="sub-steps">
+                <div class="sub-step">🔑 Generate unique encryption keys</div>
+                <div class="sub-step">🔒 Encrypt each asset with <span class="highlight">AES-256-CBC</span></div>
+                <div class="sub-step">💾 Overwrite original files with encrypted versions</div>
+            </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="step critical-step">
+            <div class="step-number">4</div>
+            <div class="step-title">Inject AES Decryptor Smali Classes</div>
+            <div class="step-description">Add custom decryption logic to handle encrypted assets at runtime</div>
+            <div class="sub-steps">
+                <div class="sub-step">📝 Create <span class="highlight">AESDecryptor.open()</span> method</div>
+                <div class="sub-step">📝 Create <span class="highlight">AESDecryptor.openFd()</span> method</div>
+                <div class="sub-step">🔧 Inject Smali classes into decoded APK</div>
+            </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="step critical-step">
+            <div class="step-number">5</div>
+            <div class="step-title">Patch Smali Files</div>
+            <div class="step-description">Modify existing code to redirect asset access through decryption layer</div>
+            <div class="sub-steps">
+                <div class="sub-step">
+                    <strong>5.1 AssetManager.open() Calls</strong><br>
+                    Replace with → <span class="highlight">AESDecryptor.open</span>
+                </div>
+                <div class="sub-step">
+                    <strong>5.2 AssetManager.openFd() Calls</strong><br>
+                    Extract Context Register → Replace with <span class="highlight">AESDecryptorFd.openAssetFd</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="step process-step">
+            <div class="step-number">6</div>
+            <div class="step-title">Rebuild APK (apktool)</div>
+            <div class="step-description">Recompile the modified APK with encrypted assets and patched code</div>
+            <div class="code-snippet">apktool b decoded_apk/ -o rebuilt.apk</div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="step process-step">
+            <div class="step-number">7</div>
+            <div class="step-title">Sign APK (Uber APK Signer)</div>
+            <div class="step-description">Apply digital signature to ensure APK integrity and enable installation</div>
+            <div class="code-snippet">java -jar uber-apk-signer.jar --apks rebuilt.apk</div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="step input-output">
+            <div class="step-number">✅</div>
+            <div class="step-title">Output: Protected APK</div>
+            <div class="step-description">Fully encrypted and signed APK with runtime asset decryption capabilities</div>
+        </div>
+    </div>
+</body>
+</html>
