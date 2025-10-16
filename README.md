@@ -13,8 +13,7 @@
 - **Automated Bytecode Patching**: Scans the application's Smali code and automatically patches all invocations of `AssetManager.open()`, `AssetManager.openFd()` to redirect through the injected decryption logic.
 - **Automated Signing**: Signs the final, repackaged APK with a debug key for immediate deployment and testing.
 
-### Architectural Flow
-Visual Representation : https://k4r7h1k-d.github.io/Asset_Encryption_-_Injection/
+### Architectural Flow : [Visual Representation](https://k4r7h1k-d.github.io/AutoCrypInject-v1/)
 1. **Decompile**: The process starts with a `Target APK`, which is decompiled into its constituent `Decompiled APK Files`.
 2. **Encrypt**: Following a `User Selection` of files to protect, the chosen assets are encrypted, resulting in `Encrypted Assets`.
 3. **Generate & Convert**: A `Decryption java source` file is created and converted through the sequence `java` → `class` → `dex` → `smali`.
